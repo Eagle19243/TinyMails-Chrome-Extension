@@ -29,7 +29,6 @@ InboxSDK.load('1', 'sdk_shorteremails_f9eda92906').then(function(SDK){
        	// Doing this timeout thing to be energy conscious
         composeView.getBodyElement().onkeydown = function(){
 			chrome.runtime.sendMessage({message: "GetData"}, function(response){
-				console.log("Response", response);
 				if (response.isEnabled === "true") {
 					Update(response.blacklist.split(", "), true);
 				} else {
@@ -88,14 +87,13 @@ InboxSDK.load('1', 'sdk_shorteremails_f9eda92906').then(function(SDK){
 					htmlContent = ReplaceAll(htmlContent, '<label class="">', '');
 					htmlContent = ReplaceAll(htmlContent, '</label>', '');
 					$(composeView.getBodyElement()).empty();
-					console.log("isEnabled", isEnabled);
+					
 					if (isEnabled) {
 						$("#" + mainDivID).show();
 					} else {
 						$("#" + mainDivID).hide();
 					}
 
-					console.log("HTML Content", htmlContent);
 					if (blacklist) {
 						blacklist.forEach(function(word){
 							var index = htmlContent.indexOf(word);
@@ -108,7 +106,7 @@ InboxSDK.load('1', 'sdk_shorteremails_f9eda92906').then(function(SDK){
 							}
 						});
 					}
-					console.log("HTML Content", htmlContent);
+				
 					$(composeView.getBodyElement()).append(htmlContent);
 					PlaceCaretAtEnd($(composeView.getBodyElement()).get(0));
 	        	},200);
