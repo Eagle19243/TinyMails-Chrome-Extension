@@ -1,24 +1,36 @@
 {
-"update_url": "https://clients2.google.com/service/update2/crx",
-
   "name": "TinyMails",
   "description": "Aims at encouraging brevity in correspondence, by showing the character count of the currently typed email in Gmail.",
-  "version": "0.1",
+  "version": "1.0.0",
   "content_scripts": [
     {
       "matches": [
         "https://mail.google.com/*",
         "https://inbox.google.com/*"
       ],
-      "js": ["inboxsdk.js","main.js", "jquery.js"],
-      "css": ["style.css"],
+      "js": [
+        "vendor/inbox/inboxsdk.js", 
+        "vendor/jquery/jquery.min.js", 
+        "js/content.js"],
+      "css": ["css/style.css"],
       "run_at": "document_end"
     }
   ],
-  "icons": {"128": "icon.png"},
+  "icons": {"128": "img/icon.png"},
+  "browser_action": {
+    "default_icon": {
+      "128": "img/icon.png"
+    },
+    "default_popup": "html/popup.html"
+  },
+  "background": {
+    "scripts": ["js/background.js"],
+    "persistent": false
+  },
   "permissions": [
     "https://mail.google.com/",
     "https://inbox.google.com/"
   ],
-  "manifest_version": 2
+  "manifest_version": 2,
+  "author": "Eagle19243"
 }

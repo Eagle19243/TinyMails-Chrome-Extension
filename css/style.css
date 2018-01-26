@@ -1,6 +1,9 @@
-.wse_main
+.wse-main
 {
     margin-left: 7px;
     font-size: 13px;
     margin-top: 1px;
+}
+.lbl-blocked-word {
+    background-color: #fbca5c;
 }

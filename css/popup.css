@@ -1,0 +1,10 @@
+body {
+    width: 300px;
+    height: auto;
+}
+.main {
+    padding: 10px;
+}
+#btn_apply{
+    margin-top: 10px;
+}
