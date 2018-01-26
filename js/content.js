@@ -29,15 +29,20 @@ InboxSDK.load('1', 'sdk_shorteremails_f9eda92906').then(function(SDK){
        	// Doing this timeout thing to be energy conscious
         composeView.getBodyElement().onkeydown = function(){
 			chrome.runtime.sendMessage({message: "GetData"}, function(response){
-				if (response.isEnabled === "true") {
-					Update(response.blacklist.split(", "), true);
+				var blacklist;
+				if (!response.blacklist) {
+					blacklist = [];
 				} else {
-					Update(response.blacklist.split(", "), false);
+					blacklist = response.blacklist.split(", ");
+				}
+
+				if (response.isEnabled === "true") {
+					Update(blacklist, true);
+				} else {
+					Update(blacklist, false);
 				}
 			});
         };
-
-        Update();
 
 		composeCount++;
 		
@@ -93,19 +98,17 @@ InboxSDK.load('1', 'sdk_shorteremails_f9eda92906').then(function(SDK){
 					} else {
 						$("#" + mainDivID).hide();
 					}
-
-					if (blacklist) {
-						blacklist.forEach(function(word){
-							var index = htmlContent.indexOf(word);
-							if (index > -1) {
-								if (isEnabled) {
-									htmlContent = ReplaceAll(htmlContent, word, '<label class="lbl-blocked-word">' + word + '</label>');
-								} else {
-									htmlContent = ReplaceAll(htmlContent, word, '<label class="">' + word + '</label>');
-								}
+					
+					blacklist.forEach(function(word){
+						var index = htmlContent.indexOf(word);
+						if (index > -1) {
+							if (isEnabled) {
+								htmlContent = ReplaceAll(htmlContent, word, '<label class="lbl-blocked-word">' + word + '</label>');
+							} else {
+								htmlContent = ReplaceAll(htmlContent, word, '<label class="">' + word + '</label>');
 							}
-						});
-					}
+						}
+					});
 				
 					$(composeView.getBodyElement()).append(htmlContent);
 					PlaceCaretAtEnd($(composeView.getBodyElement()).get(0));
