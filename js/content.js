@@ -15,12 +15,15 @@ function ColorForTimeInSec(timeInSec) {
 InboxSDK.load('1', 'sdk_shorteremails_f9eda92906').then(function(SDK){
 	var composeCount = 0;
 	var len_before = len_after = 0;
+	var isUpdated_Blacklist = false;
+	var composeViewEl = null;
 
 	// the SDK has been loaded, now do something with it!
 	SDK.Compose.registerComposeViewHandler(function(composeView){
         var timeOutID;
 		var readingSpeedWPM = 190;
 		var mainDivID = 'wse_main_' + composeCount;
+		composeViewEl = composeView;
 
 		var statusBar = composeView.addStatusBar({
 			height: 21
@@ -28,10 +31,16 @@ InboxSDK.load('1', 'sdk_shorteremails_f9eda92906').then(function(SDK){
 
 		statusBar.el.innerHTML = "<div class='wse-main' id='"+ mainDivID + "'></div>";
 		
-		$(composeView.getBodyElement()).bind('DOMSubtreeModified', function(e){
+		$(composeView.getBodyElement()).bind('DOMSubtreeModified', ChangeMailContent);
+
+		composeCount++;
+		
+		function ChangeMailContent(e){
+			if (e.target.innerHTML.length == 0) return;
+
 			len_before = e.target.innerHTML.length;
 
-			if (e.target.innerHTML.length > 0 && len_before != len_after) {
+			if (len_before != len_after || isUpdated_Blacklist) {
 				chrome.runtime.sendMessage({message: "GetData"}, function(response){
 					var blacklist;
 					if (!response.blacklist) {
@@ -47,12 +56,11 @@ InboxSDK.load('1', 'sdk_shorteremails_f9eda92906').then(function(SDK){
 					}
 
 					len_after = e.target.innerHTML.length;
+					isUpdated_Blacklist = false;
 				});
 			}
-		});
+		}
 
-		composeCount++;
-		
 		function Update(blacklist, isEnabled) {
         	if (timeOutID == null) {
 	        	timeOutID = window.setTimeout(function(){
@@ -146,4 +154,11 @@ InboxSDK.load('1', 'sdk_shorteremails_f9eda92906').then(function(SDK){
 			return str;
 		}
 	});
+
+	chrome.runtime.onMessage.addListener(function(request, sender, response){
+		if (request.message == 'Update_BlackList' && composeViewEl != null) {
+			isUpdated_Blacklist = true;
+			$(composeViewEl.getBodyElement()).trigger('DOMSubtreeModified');
+		}
+	});	
 });
