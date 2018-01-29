@@ -1,4 +1,4 @@
-var switchery, txt_words, btn_apply;
+var switchery, txt_words;
 
 window.onload = function(){
     initComponent();
@@ -10,13 +10,12 @@ function initComponent(){
     switchery.checked = localStorage.getItem("isEnabled") === "true"? true: false;
     Switchery(switchery);
     txt_words = $("#txt_words").tokenfield();
-    btn_apply = document.getElementById("btn_apply");
     txt_words.tokenfield("setTokens", localStorage.getItem("blacklist"));
 }
 
 function initEventHandler(){
     switchery.onchange = ChangeState;
-    btn_apply.onclick = Apply;
+    txt_words.on('tokenfield:createdtoken', Apply);
 }
 
 function Apply(){
@@ -26,10 +25,8 @@ function Apply(){
 function ChangeState(){
     if (switchery.checked) {
         txt_words.tokenfield("enable");
-        btn_apply.classList.remove("disabled");
     } else {
         txt_words.tokenfield("disable");
-        btn_apply.classList.add("disabled");
     }
 
     localStorage.setItem("isEnabled", switchery.checked);

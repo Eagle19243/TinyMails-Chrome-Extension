@@ -14,6 +14,7 @@ function ColorForTimeInSec(timeInSec) {
 
 InboxSDK.load('1', 'sdk_shorteremails_f9eda92906').then(function(SDK){
 	var composeCount = 0;
+	var len_before = len_after = 0;
 
 	// the SDK has been loaded, now do something with it!
 	SDK.Compose.registerComposeViewHandler(function(composeView){
@@ -26,23 +27,29 @@ InboxSDK.load('1', 'sdk_shorteremails_f9eda92906').then(function(SDK){
 		});
 
 		statusBar.el.innerHTML = "<div class='wse-main' id='"+ mainDivID + "'></div>";
-       	// Doing this timeout thing to be energy conscious
-        composeView.getBodyElement().onkeydown = function(){
-			chrome.runtime.sendMessage({message: "GetData"}, function(response){
-				var blacklist;
-				if (!response.blacklist) {
-					blacklist = [];
-				} else {
-					blacklist = response.blacklist.split(", ");
-				}
+		
+		$(composeView.getBodyElement()).bind('DOMSubtreeModified', function(e){
+			len_before = e.target.innerHTML.length;
 
-				if (response.isEnabled === "true") {
-					Update(blacklist, true);
-				} else {
-					Update(blacklist, false);
-				}
-			});
-        };
+			if (e.target.innerHTML.length > 0 && len_before != len_after) {
+				chrome.runtime.sendMessage({message: "GetData"}, function(response){
+					var blacklist;
+					if (!response.blacklist) {
+						blacklist = [];
+					} else {
+						blacklist = response.blacklist.split(", ");
+					}
+	
+					if (response.isEnabled === "true") {
+						Update(blacklist, true);
+					} else {
+						Update(blacklist, false);
+					}
+
+					len_after = e.target.innerHTML.length;
+				});
+			}
+		});
 
 		composeCount++;
 		
