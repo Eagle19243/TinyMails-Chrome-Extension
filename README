@@ -2,4 +2,4 @@
 
 1. CRUD words on the blacklist (supported withing the plugin's own UI)
 2. Observe the TinyMails functionality as it already exists
-3. For every word currently on the blacklist, observe matching word(s) in a Gmail composition view getting highlighted.
+3. For every word currently on the blacklist, observe matching word(s) in a Gmail composition view getting underline.

@@ -4,6 +4,9 @@
     font-size: 13px;
     margin-top: 1px;
 }
-.lbl-blocked-word {
-    background-color: #fbca5c;
+.jns-warning {
+    border-bottom: 2px dashed #FF9933;
+}
+.jns-warning-disabled {
+    border-bottom: 0px;
 }

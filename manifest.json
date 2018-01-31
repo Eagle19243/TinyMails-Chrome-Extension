@@ -10,8 +10,13 @@
       ],
       "js": [
         "vendor/inbox/inboxsdk.js", 
-        "vendor/jquery/jquery.min.js", 
-        "js/content.js"],
+        "vendor/jquery/jquery.min.js",
+        "vendor/dom-regexp-match/dom-regexp-match-1.1.0.js",
+        "js/highlightGenerator.js",
+        "js/warningChecker.js",
+        "js/justNotSorry.js",
+        "js/content.js"
+      ],
       "css": ["css/style.css"],
       "run_at": "document_end"
     }

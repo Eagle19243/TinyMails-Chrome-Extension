@@ -22,15 +22,10 @@ function initEventHandler(){
 
 function Apply(){
     localStorage.setItem("blacklist", txt_words.tokenfield('getTokensList'));
-    chrome.tabs.query({
-            active: true, 
-            currentWindow: true, 
-            url:["https://mail.google.com/*", "https://inbox.google.com/*"]
-        },
-        function(tabs){
-            chrome.tabs.sendMessage(tabs[0].id, {message: "Update_BlackList"});
-        }
-    );
+    SendMessage({
+        message: "Update_BlackList", 
+        blacklist: localStorage.getItem("blacklist")
+    });
 }
 
 function ChangeState(){
@@ -41,6 +36,22 @@ function ChangeState(){
     }
 
     localStorage.setItem("isEnabled", switchery.checked);
+    SendMessage({
+        message: "isEnabled", 
+        isEnabled: localStorage.getItem("isEnabled")
+    });
+}
+
+function SendMessage(data){
+    chrome.tabs.query({
+            active: true, 
+            currentWindow: true, 
+            url:["https://mail.google.com/*", "https://inbox.google.com/*"]
+        },
+        function(tabs){
+            chrome.tabs.sendMessage(tabs[0].id, data);
+        }
+    );
 }
 
 
